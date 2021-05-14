@@ -1,7 +1,13 @@
 <template>
   <el-container class="homeContainer">
     <!-- 头部区域 -->
-    <el-header>Header</el-header>
+    <el-header>
+      <div>
+        <img src="../assets/mlogo.png" alt=""/>
+        <span>电商后台管理系统</span>
+      </div>
+      <el-button type="info" @click="logOut">退出</el-button>
+    </el-header>
     <!-- 页面主题区域 -->
     <el-container>
       <!-- 左侧边栏区域 -->
@@ -13,7 +19,14 @@
 </template>
 
 <script>
-
+export default {
+  methods: {
+    logOut () {
+      window.sessionStorage.clear()
+      this.$router.push('/login')
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -23,6 +36,21 @@
 
 .el-header{
   background-color: #373d41;
+  display: flex;
+  justify-content: space-between; //space-between 在两个子元素下 可以实现左右对齐的效果
+  padding-left: 0;
+  align-items: center;
+}
+
+.el-header div{
+  display: flex;
+  align-items: center;
+}
+
+.el-header span{
+  color: #fff;
+  font-size: 20px;
+  margin-left: 15px;
 }
 
 .el-aside{
