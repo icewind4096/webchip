@@ -33,8 +33,8 @@ export default {
     return {
       // 登录表单的数据绑定对象
       loginForm: {
-        userName: '',
-        password: ''
+        userName: 'admin',
+        password: '123456'
       },
       loginFormVaild: {
         userName: [
@@ -56,7 +56,7 @@ export default {
     login () {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (valid) {
-          const result = await this.$http.post('login', { username: this.userName, password: this.password })
+          const result = await this.$http.post('login', { username: this.loginForm.userName, password: this.loginForm.password })
           const data = result.data
           if (data.meta.status !== 200) {
             return this.$message.error('登录失败')
@@ -64,7 +64,8 @@ export default {
           // 弹出登录成功提示框
           this.$message.success('登录成功')
           // 把服务器返回的token保存在客户端的sessionStorage中
-          window.sessionStorage.setItem('token', data.token)
+          console.log(data)
+          window.sessionStorage.setItem('token', data.data.token)
           // 把页面路由到/home
           await this.$router.push('/home')
         }
