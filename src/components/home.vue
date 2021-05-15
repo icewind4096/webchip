@@ -16,7 +16,7 @@
         <!-- 设置菜单栏是否全部展开 -->
         <div class="toggleMenuButton" @click="toggleMenu">|||</div>
         <!-- 左侧边栏菜单区域 -->
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409eff" :unique-opened="true" :collapse="menuCollapse" :collapse-transition="collapeTransition"  >
+        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409eff" :unique-opened="true" :collapse="menuCollapse" :collapse-transition="collapeTransition" :router="routerEn" >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id.toString()" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单模板区 -->
@@ -28,7 +28,7 @@
             </template>
 
             <!-- 二级菜单 -->
-            <el-menu-item :index="item.id.toString()" v-for="item in item.children" :key="item.id">
+            <el-menu-item :index="'/' + item.path" v-for="item in item.children" :key="item.id">
               <template slot="title">
                 <!-- 图标 -->
                 <i class="el-icon-menu"></i>
@@ -41,7 +41,10 @@
       </el-aside>
 
       <!-- 右侧主题区域 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <!-- 路由占位符-->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -53,7 +56,8 @@ export default {
       menuList: [],
       asideWidth: '200px',
       menuCollapse: false,
-      collapeTransition: false
+      collapeTransition: false,
+      routerEn: true
     }
   },
   created () {
