@@ -115,6 +115,15 @@ import axios from 'axios'
 //挂载axios到vue
   Vue.prototype.$http = axios
 ```
+3. 配置axios的请求拦截器
+此示例是为header部分，添加了一个Authorization字段，字段值为sessionStorage中取出的token字段
+```js
+  axios.interceptors.request.use(config => {
+    config.headers.Authorization = window.sessionStorage.getItem('token')
+    //必须return config
+    return config
+})
+```
 
 ###数据本地持久化
 ```js
