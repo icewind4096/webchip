@@ -16,7 +16,7 @@
         <!-- 设置菜单栏是否全部展开 -->
         <div class="toggleMenuButton" @click="toggleMenu">|||</div>
         <!-- 左侧边栏菜单区域 -->
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409eff" :unique-opened="true" :collapse="menuCollapse" :collapse-transition="collapeTransition" :router="routerEn" >
+        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409eff" :unique-opened="true" :collapse="menuCollapse" :collapse-transition="collapeTransition" :router="routerEn" :default-active="activatePath" >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id.toString()" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单模板区 -->
@@ -28,7 +28,7 @@
             </template>
 
             <!-- 二级菜单 -->
-            <el-menu-item :index="'/' + item.path" v-for="item in item.children" :key="item.id">
+            <el-menu-item :index="'/' + item.path" v-for="item in item.children" :key="item.id" @click="saveActiveIndexToStorage('/' + item.path)">
               <template slot="title">
                 <!-- 图标 -->
                 <i class="el-icon-menu"></i>
@@ -57,14 +57,15 @@ export default {
       asideWidth: '200px',
       menuCollapse: false,
       collapeTransition: false,
-      routerEn: true
+      routerEn: true,
+      activatePath: ''
     }
   },
   created () {
     this.getMenuList()
+    this.activatePath = window.sessionStorage.getItem('activatePath')
   },
   mounted () {
-
   },
   methods: {
     logOut () {
@@ -91,6 +92,11 @@ export default {
       } else {
         this.asideWidth = '200px'
       }
+    },
+    // 保存当前激活菜单的index到sessionstage
+    saveActiveIndexToStorage (activatePath) {
+      window.sessionStorage.setItem('activatePath', activatePath)
+      this.activatePath = activatePath
     }
   }
 }
