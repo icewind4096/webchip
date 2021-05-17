@@ -71,6 +71,7 @@ Message的使用方式和其他的组件使用方式不一样，需要挂载到V
 ```   
 
 ###路由
+
 ####规则
 >位于router/index.js中
 ```js
@@ -81,6 +82,40 @@ const routes = [
 { path: '/', redirect: '/login' },      //默认无url，重定向到/login
 { path: '/login', component: Login }    //url=login，使用login组件
 ]
+```
+#####子路由规则
+1. 定义子路由
+```js
+const routes = [
+  // 子路由规则，访问了/home，此时会重定向到/welcome页面
+  {
+    path: '/home',
+    component: Home,
+    redirect: '/welcome',
+    children: [
+      { path: '/welcome', component: Welcome }
+    ]
+  }
+]
+```
+2. 在对应的html中，放置路由占位符
+```html
+  <!-- 右侧主题区域 -->
+  <el-main>
+    <!-- 路由占位符 用于子路由-->
+    <router-view></router-view>
+  </el-main>
+```
+
+3. 在el-Menu中，设置router属性为true
+```html
+    <el-menu router="true" >
+```
+
+4.修改el-menu-item 的index属性为目标路由地址
+```html
+    设置index的值为目标路由地址, "/"必须有，否则和路由配置对不上
+    <el-menu-item :index="/xxx">
 ```
 ####守护
 如果某一个url需要登录或者其他特殊条件才可以访问，则使用导航守卫实现
