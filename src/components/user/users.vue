@@ -45,7 +45,7 @@
             </el-tooltip>
             <!-- 分配用户角色 -->
             <el-tooltip content="分配权限" placement="bottom" effect="dark" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="roleUser(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -90,6 +90,29 @@
       </span>
     </el-dialog>
 
+    <!-- 权限分配对话框 -->
+    <el-dialog title="分配权限" :close-on-click-modal="false" :visible.sync="userRoleDialog.visible" @close="setRightDialogClose" width="50%">
+      <!-- 内容主体区域 -->
+      <el-form ref="RoleDialogRef">
+        <p>当前用户: {{userRoleDialog.userName}}</p>
+        <p>当前角色: {{userRoleDialog.role}}</p>
+        <p>分配新角色:
+          <el-select v-model="userRoleDialog.currentRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in userRoleDialog.roles"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </p>
+      </el-form>
+      <!-- 底部区域 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="userRoleDialog.visible = false">取 消</el-button>
+        <el-button type="primary" @click="UserRoleDialogOk">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -128,6 +151,14 @@ export default {
         size: 5 // 每页记录数
       },
       userData: {},
+      userRoleDialog: {
+        visible: false,
+        id: '',
+        userName: '',
+        role: '',
+        currentRoleId: '',
+        roles: []
+      },
       userDialog: {
         title: '',
         visible: false,
@@ -251,7 +282,7 @@ export default {
       this.userForm.mobile = ''
       this.userForm.email = ''
     },
-    // 点击确定按钮
+    // 用户对户框点击确定按钮
     userFormOk () {
       this.$refs.userFormRef.validate(async (valid) => {
         if (valid) {
@@ -282,6 +313,44 @@ export default {
           this.getUserList()
         }
       })
+    },
+    // 分配角色对话框
+    async roleUser (row) {
+      // 获取角色列表
+      const response = await this.$http.get('roles')
+      const data = response.data
+      if (data.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败')
+      }
+
+      this.userRoleDialog.id = row.id
+
+      this.userRoleDialog.roles = data.data
+
+      this.userRoleDialog.userName = row.username
+      this.userRoleDialog.role = row.role_name
+      this.userRoleDialog.currentRoleId = ''
+
+      this.userRoleDialog.visible = true
+    },
+    async UserRoleDialogOk () {
+      if (!this.userRoleDialog.currentRoleId) {
+        return this.$message.error('用户未分配角色，请选择新角色')
+      }
+
+      const response = await this.$http.put(`users/${this.userRoleDialog.id}/role`, {
+        rid: this.userRoleDialog.currentRoleId
+      })
+
+      const data = response.data
+      if (data.meta.status !== 200) {
+        return this.$message.error('分配用户角色失败')
+      }
+      this.$message.success('分配用户角色成功')
+
+      this.getUserList()
+
+      this.userRoleDialog.visible = false
     }
   }
 }

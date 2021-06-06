@@ -170,3 +170,14 @@ import axios from 'axios'
 ```js
 this.$router.push('你需要路由跳转的地址')
 ```
+
+###element ui使用
+####table
+1. 自动序号 
+```html
+<el-table-column label="此列为序号" type="index"/>
+```
+2. 展开列, 在此列出现一个 '>' , 表示可以展开
+```html
+<el-table-column label="此列可以展开" type="expand"/>
+```
